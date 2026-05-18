@@ -72,3 +72,35 @@ class TestGetByRegion:
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Spain" not in names
+
+
+class TestGetByCurrency:
+    def test_status_code(self):
+        response = requests.get(f"{BASE_URL}/currency/rub")
+        assert response.status_code == 200
+
+    def test_request_body(self):
+        response = requests.get(f"{BASE_URL}/currency/rub")
+        assert len(response.json()) > 0
+
+    def test_currency(self):
+        response = requests.get(f"{BASE_URL}/currency/rub")
+        data = response.json()
+        # to do: refactor with next()
+        russia = None
+        for country in data:
+            if country["name"]["common"] == "Russia":
+                russia = country
+        assert russia["currencies"]["RUB"]["name"] == "Russian ruble"
+
+    def test_rub_country(self):
+        response = requests.get(f"{BASE_URL}/currency/rub")
+        data = response.json()
+        names = [country["name"]["common"] for country in data]
+        assert "Russia" in names
+
+    def test_non_rub_country(self):
+        response = requests.get(f"{BASE_URL}/currency/rub")
+        data = response.json()
+        names = [country["name"]["common"] for country in data]
+        assert "Thailand" not in names
