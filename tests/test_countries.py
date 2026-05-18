@@ -131,3 +131,39 @@ class TestGetByLanguage:
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Russia" not in names
+
+
+class TestAllCountries:
+    def test_status_code(self):
+        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+        assert response.status_code == 200
+
+    def test_request_body(self):
+        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+        assert len(response.json()) > 0
+
+    def test_multiple_country_returned(self):
+        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+        assert len(response.json()) > 1
+
+    def test_no_currencies(self):
+        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+        data = response.json()
+        assert "currencies" not in data[0]
+
+    def test_no_languages(self):
+        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+        data = response.json()
+        assert "languages" not in data[0]
+
+    def test_real_country(self):
+        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+        data = response.json()
+        names = [country["name"]["common"] for country in data]
+        assert "United States" in names
+
+    def test_not_real_country(self):
+        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+        data = response.json()
+        names = [country["name"]["common"] for country in data]
+        assert "Utopia" not in names
