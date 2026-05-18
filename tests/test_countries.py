@@ -1,8 +1,6 @@
 import requests
 import pytest
-
-
-BASE_URL = "https://restcountries.com/v3.1"
+from config import BASE_URL
 
 
 class TestGetCountryByCode:
