@@ -1,6 +1,6 @@
 import requests
 import pytest
-from tests.config import BASE_URL
+from config import BASE_URL
 
 
 class TestGetCountryByCode:
