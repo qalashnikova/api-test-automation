@@ -1,90 +1,100 @@
 import requests
+import pytest
+
 
 BASE_URL = "https://restcountries.com/v3.1"
 
 
 class TestGetCountryByCode:
-    def test_status_code(self):
-        response = requests.get(f"{BASE_URL}/alpha/th")
+
+    @pytest.fixture
+    def response(self):
+        return requests.get(f"{BASE_URL}/alpha/th")
+
+    def test_status_code(self, response):
         assert response.status_code == 200
 
-    def test_request_body(self):
-        response = requests.get(f"{BASE_URL}/alpha/th")
+    def test_request_body(self, response):
         assert len(response.json()) > 0
 
-    def test_single_country_returned(self):
-        response = requests.get(f"{BASE_URL}/alpha/th")
+    def test_single_country_returned(self, response):
         assert len(response.json()) == 1
 
-    def test_name(self):
-        response = requests.get(f"{BASE_URL}/alpha/th")
+    def test_name(self, response):
         data = response.json()
         assert data[0]["name"]["common"] == "Thailand"
 
 
 class TestGetCountryByName:
-    def test_status_code(self):
-        response = requests.get(f"{BASE_URL}/name/thailand")
+
+    @pytest.fixture
+    def response(self):
+        return requests.get(f"{BASE_URL}/name/thailand")
+
+    def test_status_code(self, response):
         assert response.status_code == 200
 
-    def test_request_body(self):
-        response = requests.get(f"{BASE_URL}/name/thailand")
+    def test_request_body(self, response):
         assert len(response.json()) > 0
 
-    def test_single_country_returned(self):
-        response = requests.get(f"{BASE_URL}/name/thailand")
+    def test_single_country_returned(self, response):
         assert len(response.json()) == 1
 
-    def test_name(self):
-        response = requests.get(f"{BASE_URL}/name/thailand")
+    def test_name(self, response):
         data = response.json()
         assert data[0]["name"]["common"] == "Thailand"
 
 
 class TestInvalidCountry:
-    def test_status_code(self):
-        response = requests.get(f"{BASE_URL}/name/utopia")
+
+    @pytest.fixture
+    def response(self):
+        return requests.get(f"{BASE_URL}/name/utopia")
+
+    def test_status_code(self, response):
         assert response.status_code == 404
 
-    def test_message(self):
-        response = requests.get(f"{BASE_URL}/name/utopia")
+    def test_message(self, response):
         data = response.json()
         assert data["message"] == "Not Found"
 
 
 class TestGetByRegion:
-    def test_status_code(self):
-        response = requests.get(f"{BASE_URL}/region/asia")
+
+    @pytest.fixture
+    def response(self):
+        return requests.get(f"{BASE_URL}/region/asia")
+
+    def test_status_code(self, response):
         assert response.status_code == 200
 
-    def test_request_body(self):
-        response = requests.get(f"{BASE_URL}/region/asia")
+    def test_request_body(self, response):
         assert len(response.json()) > 0
 
-    def test_asian_country(self):
-        response = requests.get(f"{BASE_URL}/region/asia")
+    def test_asian_country(self, response):
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Thailand" in names
 
-    def test_non_asian_country(self):
-        response = requests.get(f"{BASE_URL}/region/asia")
+    def test_non_asian_country(self, response):
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Spain" not in names
 
 
 class TestGetByCurrency:
-    def test_status_code(self):
-        response = requests.get(f"{BASE_URL}/currency/rub")
+
+    @pytest.fixture
+    def response(self):
+        return requests.get(f"{BASE_URL}/currency/rub")
+
+    def test_status_code(self, response):
         assert response.status_code == 200
 
-    def test_request_body(self):
-        response = requests.get(f"{BASE_URL}/currency/rub")
+    def test_request_body(self, response):
         assert len(response.json()) > 0
 
-    def test_currency(self):
-        response = requests.get(f"{BASE_URL}/currency/rub")
+    def test_currency(self, response):
         data = response.json()
         # to do: refactor with next()
         russia = None
@@ -93,77 +103,73 @@ class TestGetByCurrency:
                 russia = country
         assert russia["currencies"]["RUB"]["name"] == "Russian ruble"
 
-    def test_rub_country(self):
-        response = requests.get(f"{BASE_URL}/currency/rub")
+    def test_rub_country(self, response):
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Russia" in names
 
-    def test_non_rub_country(self):
-        response = requests.get(f"{BASE_URL}/currency/rub")
+    def test_non_rub_country(self, response):
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Thailand" not in names
 
 
 class TestGetByLanguage:
-    def test_status_code(self):
-        response = requests.get(f"{BASE_URL}/lang/english")
+
+    @pytest.fixture
+    def response(self):
+        return requests.get(f"{BASE_URL}/lang/english")
+
+    def test_status_code(self, response):
         assert response.status_code == 200
 
-    def test_request_body(self):
-        response = requests.get(f"{BASE_URL}/lang/english")
+    def test_request_body(self, response):
         assert len(response.json()) > 0
 
-    def test_language(self):
-        response = requests.get(f"{BASE_URL}/lang/english")
+    def test_language(self, response):
         data = response.json()
         assert "English" in data[0]["languages"].values()
 
-    def test_eng_country(self):
-        response = requests.get(f"{BASE_URL}/lang/english")
+    def test_eng_country(self, response):
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "United States" in names
 
-    def test_non_eng_country(self):
-        response = requests.get(f"{BASE_URL}/lang/english")
+    def test_non_eng_country(self, response):
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Russia" not in names
 
 
 class TestAllCountries:
-    def test_status_code(self):
-        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+
+    @pytest.fixture
+    def response(self):
+        return requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+
+    def test_status_code(self, response):
         assert response.status_code == 200
 
-    def test_request_body(self):
-        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+    def test_request_body(self, response):
         assert len(response.json()) > 0
 
-    def test_multiple_country_returned(self):
-        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+    def test_multiple_country_returned(self, response):
         assert len(response.json()) > 1
 
-    def test_no_currencies(self):
-        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+    def test_no_currencies(self, response):
         data = response.json()
         assert "currencies" not in data[0]
 
-    def test_no_languages(self):
-        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+    def test_no_languages(self, response):
         data = response.json()
         assert "languages" not in data[0]
 
-    def test_real_country(self):
-        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+    def test_real_country(self, response):
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "United States" in names
 
-    def test_not_real_country(self):
-        response = requests.get(f"{BASE_URL}/all?fields=name,capital,region")
+    def test_not_real_country(self, response):
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Utopia" not in names
