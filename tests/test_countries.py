@@ -104,3 +104,30 @@ class TestGetByCurrency:
         data = response.json()
         names = [country["name"]["common"] for country in data]
         assert "Thailand" not in names
+
+
+class TestGetByLanguage:
+    def test_status_code(self):
+        response = requests.get(f"{BASE_URL}/lang/english")
+        assert response.status_code == 200
+
+    def test_request_body(self):
+        response = requests.get(f"{BASE_URL}/lang/english")
+        assert len(response.json()) > 0
+
+    def test_language(self):
+        response = requests.get(f"{BASE_URL}/lang/english")
+        data = response.json()
+        assert "English" in data[0]["languages"].values()
+
+    def test_eng_country(self):
+        response = requests.get(f"{BASE_URL}/lang/english")
+        data = response.json()
+        names = [country["name"]["common"] for country in data]
+        assert "United States" in names
+
+    def test_non_eng_country(self):
+        response = requests.get(f"{BASE_URL}/lang/english")
+        data = response.json()
+        names = [country["name"]["common"] for country in data]
+        assert "Russia" not in names
