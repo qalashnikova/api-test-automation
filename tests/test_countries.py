@@ -39,3 +39,36 @@ class TestGetCountryByName:
         response = requests.get(f"{BASE_URL}/name/thailand")
         data = response.json()
         assert data[0]["name"]["common"] == "Thailand"
+
+
+class TestInvalidCountry:
+    def test_status_code(self):
+        response = requests.get(f"{BASE_URL}/name/utopia")
+        assert response.status_code == 404
+
+    def test_message(self):
+        response = requests.get(f"{BASE_URL}/name/utopia")
+        data = response.json()
+        assert data["message"] == "Not Found"
+
+
+class TestGetByRegion:
+    def test_status_code(self):
+        response = requests.get(f"{BASE_URL}/region/asia")
+        assert response.status_code == 200
+
+    def test_request_body(self):
+        response = requests.get(f"{BASE_URL}/region/asia")
+        assert len(response.json()) > 0
+
+    def test_asian_country(self):
+        response = requests.get(f"{BASE_URL}/region/asia")
+        data = response.json()
+        names = [country["name"]["common"] for country in data]
+        assert "Thailand" in names
+
+    def test_non_asian_country(self):
+        response = requests.get(f"{BASE_URL}/region/asia")
+        data = response.json()
+        names = [country["name"]["common"] for country in data]
+        assert "Spain" not in names
