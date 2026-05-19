@@ -47,7 +47,8 @@ class TestGetCountryByName:
         return requests.get(f"{BASE_URL}/name/thailand")
 
     def test_single_country_returned(self, response):
-        assert len(response.json()) == 1
+        data = response.json()
+        assert len(data) == 1
 
     def test_name(self, response):
         data = response.json()
@@ -123,7 +124,8 @@ class TestAllCountries:
         return requests.get(f"{BASE_URL}/all?fields=name,capital,region")
 
     def test_multiple_country_returned(self, response):
-        assert len(response.json()) > 1
+        data = response.json()
+        assert len(data) > 1
 
     def test_no_currencies(self, response):
         data = response.json()
