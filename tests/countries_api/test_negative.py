@@ -8,6 +8,6 @@ from config import BASE_URL
 )
 def test_invalid_returns_404(url):
     response = requests.get(f"{BASE_URL}{url}")
-    data = response.json()
     assert response.status_code == 404
+    data = response.json()
     assert data["message"] == "Not Found"
