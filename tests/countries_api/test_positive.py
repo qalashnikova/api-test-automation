@@ -3,17 +3,29 @@ import pytest
 from config import BASE_URL
 
 
+@pytest.mark.parametrize(
+    "url",
+    [
+        "/alpha/th",
+        "/name/thailand",
+        "/region/asia",
+        "/currency/rub",
+        "/lang/english",
+        "/all?fields=name,capital,region",
+    ],
+)
+def test_valid_status_body(url):
+    response = requests.get(f"{BASE_URL}{url}")
+    data = response.json()
+    assert response.status_code == 200
+    assert len(response.json()) > 0
+
+
 class TestGetCountryByCode:
 
     @pytest.fixture
     def response(self):
         return requests.get(f"{BASE_URL}/alpha/th")
-
-    def test_status_code(self, response):
-        assert response.status_code == 200
-
-    def test_request_body(self, response):
-        assert len(response.json()) > 0
 
     def test_single_country_returned(self, response):
         assert len(response.json()) == 1
@@ -29,12 +41,6 @@ class TestGetCountryByName:
     def response(self):
         return requests.get(f"{BASE_URL}/name/thailand")
 
-    def test_status_code(self, response):
-        assert response.status_code == 200
-
-    def test_request_body(self, response):
-        assert len(response.json()) > 0
-
     def test_single_country_returned(self, response):
         assert len(response.json()) == 1
 
@@ -48,12 +54,6 @@ class TestGetByRegion:
     @pytest.fixture
     def response(self):
         return requests.get(f"{BASE_URL}/region/asia")
-
-    def test_status_code(self, response):
-        assert response.status_code == 200
-
-    def test_request_body(self, response):
-        assert len(response.json()) > 0
 
     def test_asian_country(self, response):
         data = response.json()
@@ -71,12 +71,6 @@ class TestGetByCurrency:
     @pytest.fixture
     def response(self):
         return requests.get(f"{BASE_URL}/currency/rub")
-
-    def test_status_code(self, response):
-        assert response.status_code == 200
-
-    def test_request_body(self, response):
-        assert len(response.json()) > 0
 
     def test_currency(self, response):
         data = response.json()
@@ -104,12 +98,6 @@ class TestGetByLanguage:
     def response(self):
         return requests.get(f"{BASE_URL}/lang/english")
 
-    def test_status_code(self, response):
-        assert response.status_code == 200
-
-    def test_request_body(self, response):
-        assert len(response.json()) > 0
-
     def test_language(self, response):
         data = response.json()
         assert "English" in data[0]["languages"].values()
@@ -130,12 +118,6 @@ class TestAllCountries:
     @pytest.fixture
     def response(self):
         return requests.get(f"{BASE_URL}/all?fields=name,capital,region")
-
-    def test_status_code(self, response):
-        assert response.status_code == 200
-
-    def test_request_body(self, response):
-        assert len(response.json()) > 0
 
     def test_multiple_country_returned(self, response):
         assert len(response.json()) > 1
