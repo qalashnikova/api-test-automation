@@ -3,6 +3,10 @@ import pytest
 from config import BASE_URL
 
 
+def get_country_names(countries):
+    return [country["name"]["common"] for country in countries]
+
+
 @pytest.mark.parametrize(
     "url",
     [
@@ -16,9 +20,9 @@ from config import BASE_URL
 )
 def test_valid_status_body(url):
     response = requests.get(f"{BASE_URL}{url}")
-    data = response.json()
     assert response.status_code == 200
-    assert len(response.json()) > 0
+    data = response.json()
+    assert len(data) > 0
 
 
 class TestGetCountryByCode:
@@ -28,7 +32,8 @@ class TestGetCountryByCode:
         return requests.get(f"{BASE_URL}/alpha/th")
 
     def test_single_country_returned(self, response):
-        assert len(response.json()) == 1
+        data = response.json()
+        assert len(data) == 1
 
     def test_name(self, response):
         data = response.json()
@@ -57,12 +62,12 @@ class TestGetByRegion:
 
     def test_asian_country(self, response):
         data = response.json()
-        names = [country["name"]["common"] for country in data]
+        names = get_country_names(data)
         assert "Thailand" in names
 
     def test_non_asian_country(self, response):
         data = response.json()
-        names = [country["name"]["common"] for country in data]
+        names = get_country_names(data)
         assert "Spain" not in names
 
 
@@ -81,12 +86,12 @@ class TestGetByCurrency:
 
     def test_rub_country(self, response):
         data = response.json()
-        names = [country["name"]["common"] for country in data]
+        names = get_country_names(data)
         assert "Russia" in names
 
     def test_non_rub_country(self, response):
         data = response.json()
-        names = [country["name"]["common"] for country in data]
+        names = get_country_names(data)
         assert "Thailand" not in names
 
 
@@ -102,12 +107,12 @@ class TestGetByLanguage:
 
     def test_eng_country(self, response):
         data = response.json()
-        names = [country["name"]["common"] for country in data]
+        names = get_country_names(data)
         assert "United States" in names
 
     def test_non_eng_country(self, response):
         data = response.json()
-        names = [country["name"]["common"] for country in data]
+        names = get_country_names(data)
         assert "Russia" not in names
 
 
@@ -130,10 +135,10 @@ class TestAllCountries:
 
     def test_real_country(self, response):
         data = response.json()
-        names = [country["name"]["common"] for country in data]
+        names = get_country_names(data)
         assert "United States" in names
 
     def test_not_real_country(self, response):
         data = response.json()
-        names = [country["name"]["common"] for country in data]
+        names = get_country_names(data)
         assert "Utopia" not in names
