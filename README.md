@@ -13,12 +13,14 @@ Automated API tests for [REST Countries API](https://restcountries.com/) built w
 
 ## Project Structure
 
+```
 tests/
 ├── countries_api/
 │   ├── test_positive.py   # Positive scenarios for all endpoints
 │   └── test_negative.py   # Negative scenarios (404, invalid inputs)
 ├── config.py              # Base URL configuration
 └── conftest.py
+```
 
 ## How to Run
 
