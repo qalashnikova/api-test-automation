@@ -74,11 +74,9 @@ class TestGetByCurrency:
 
     def test_currency(self, response):
         data = response.json()
-        # to do: refactor with next()
-        russia = None
-        for country in data:
-            if country["name"]["common"] == "Russia":
-                russia = country
+        russia = next(
+            country for country in data if country["name"]["common"] == "Russia"
+        )
         assert russia["currencies"]["RUB"]["name"] == "Russian ruble"
 
     def test_rub_country(self, response):
