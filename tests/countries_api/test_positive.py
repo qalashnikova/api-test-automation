@@ -90,6 +90,9 @@ class TestGetByCurrency:
         assert "Thailand" not in names
 
 
+н
+
+
 class TestGetByLanguage:
 
     @pytest.fixture
